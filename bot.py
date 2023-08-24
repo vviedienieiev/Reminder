@@ -7,28 +7,15 @@ from aiogram import Bot, Dispatcher, Router, types
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
-from aiogram.utils.markdown import hbold
+
+from handlers import add_new_event, start
 
 # Bot token can be obtained via https://t.me/BotFather
 with open('secrets.yml', 'r') as file:
     config = yaml.safe_load(file)
-TOKEN = config["TelegramBot"]["token"]
 
 # All handlers should be attached to the Router (or Dispatcher)
 router = Router()
-
-
-@router.message(CommandStart())
-async def command_start_handler(message: Message) -> None:
-    """
-    This handler receives messages with `/start` command
-    """
-    # Most event objects have aliases for API methods that can be called in events' context
-    # For example if you want to answer to incoming message you can use `message.answer(...)` alias
-    # and the target chat will be passed to :ref:`aiogram.methods.send_message.SendMessage`
-    # method automatically or call API method directly via
-    # Bot instance: `bot.send_message(chat_id=message.chat.id, ...)`
-    await message.answer(f"Hello, {hbold(message.from_user.full_name)}!")
 
 
 @router.message()
@@ -50,10 +37,12 @@ async def main() -> None:
     # Dispatcher is a root router
     dp = Dispatcher()
     # ... and all other routers should be attached to Dispatcher
-    dp.include_router(router)
+    dp.include_router(start.router)
+    dp.include_router(add_new_event.router)
+    # dp.include_router(router)
 
     # Initialize Bot instance with a default parse mode which will be passed to all API calls
-    bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
+    bot = Bot(config["TelegramBot"]["TOKEN"], parse_mode=ParseMode.HTML)
     # And the run events dispatching
     await dp.start_polling(bot)
 
