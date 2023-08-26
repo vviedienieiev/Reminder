@@ -7,3 +7,12 @@ class NewEvent(StatesGroup):
     event_freq = State()
     check_info = State()
     upload_event = State()
+
+class ChangeEvent(StatesGroup):
+    events_list = State()
+    selected_event = State()
+
+    get_current_reminders = State()
+    add_new_reminder = State()
+
+    delete_approve = State()

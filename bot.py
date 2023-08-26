@@ -8,7 +8,7 @@ from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
-from handlers import add_new_event, start, show_nearest_events
+from handlers import add_new_event, start, show_nearest_events, change_existing_event
 
 # Bot token can be obtained via https://t.me/BotFather
 with open('secrets.yml', 'r') as file:
@@ -40,6 +40,7 @@ async def main() -> None:
     dp.include_router(start.router)
     dp.include_router(add_new_event.router)
     dp.include_router(show_nearest_events.router)
+    dp.include_router(change_existing_event.router)
     # dp.include_router(router)
 
     # Initialize Bot instance with a default parse mode which will be passed to all API calls

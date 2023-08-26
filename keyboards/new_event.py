@@ -1,4 +1,4 @@
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 event_frequency_type =InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="Одноразова подія", callback_data="one_time_event")],
     [InlineKeyboardButton(text="Повторювана подія", callback_data="recurring_event")],
@@ -10,6 +10,3 @@ event_frequency_options = InlineKeyboardMarkup(inline_keyboard=[
     [InlineKeyboardButton(text="Кожні 6 місяців", callback_data="6 months"), InlineKeyboardButton(text="Кожен рік", callback_data="12 months")],
 ])
 
-yes_no = InlineKeyboardMarkup(inline_keyboard=[
-    [InlineKeyboardButton(text="✔️", callback_data="yes"), InlineKeyboardButton(text="❌", callback_data="no")],
-])

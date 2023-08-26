@@ -33,7 +33,7 @@ def get_recurring_events(user_id):
         next_event_date = None
 
         today = datetime.datetime.today().date()
-        init_date = datetime.datetime.strptime(val["event_date"], "%Y-%m-%d").date()
+        init_date = val["event_date"].date()
         freq = int(val["event_freq"].split(" ")[0])
         month_diff = (today.year - init_date.year) * 12 + today.month - init_date.month
         init_day = init_date.day
@@ -55,6 +55,7 @@ def get_recurring_events(user_id):
 
 @router.callback_query(F.data == "show_events")
 async def input_text_prompt(clbck: CallbackQuery, state: FSMContext):
+    await clbck.answer()
     user_id = clbck.message.chat.id
     one_time_events = get_one_time_events(user_id)
     recurring_events = get_recurring_events(user_id)
@@ -64,4 +65,7 @@ async def input_text_prompt(clbck: CallbackQuery, state: FSMContext):
     text = ""
     for num, val in enumerate(sorted_events):
         text += f"{num+1} - {val[0]} - {val[1].strftime('%Y-%m-%d')}\n"
-    await clbck.message.answer(f"{text}", reply_markup=main_menu.iexit_kb)
+    if len(text) == 0:
+        await clbck.message.answer(f"Поки що у вас немає жодної події.", reply_markup=main_menu.iexit_kb)
+    else:
+        await clbck.message.answer(f"{text}", reply_markup=main_menu.iexit_kb)
