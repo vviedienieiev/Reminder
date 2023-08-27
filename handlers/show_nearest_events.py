@@ -5,10 +5,9 @@ from dateutil.relativedelta import relativedelta
 from database.mongo import db
 
 from aiogram import Router, F
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import CallbackQuery
 from aiogram.fsm.context import FSMContext
 
-from states.states import NewEvent
 from keyboards import main_menu
 import texts
 

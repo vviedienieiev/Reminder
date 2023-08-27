@@ -1,22 +1,15 @@
 import asyncio
 import logging
 import sys
-import yaml
+import os
 
 from aiogram import Bot, Dispatcher, Router, types
 from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart
-from aiogram.types import Message
 
 from handlers import add_new_event, start, show_nearest_events, change_existing_event
 
-# Bot token can be obtained via https://t.me/BotFather
-with open('secrets.yml', 'r') as file:
-    config = yaml.safe_load(file)
-
 # All handlers should be attached to the Router (or Dispatcher)
 router = Router()
-
 
 @router.message()
 async def echo_handler(message: types.Message) -> None:
@@ -32,7 +25,6 @@ async def echo_handler(message: types.Message) -> None:
         # But not all the types is supported to be copied so need to handle it
         await message.answer("Nice try!")
 
-
 async def main() -> None:
     # Dispatcher is a root router
     dp = Dispatcher()
@@ -44,10 +36,9 @@ async def main() -> None:
     # dp.include_router(router)
 
     # Initialize Bot instance with a default parse mode which will be passed to all API calls
-    bot = Bot(config["TelegramBot"]["TOKEN"], parse_mode=ParseMode.HTML)
+    bot = Bot(os.getenv("TG_TOKEN"), parse_mode=ParseMode.HTML)
     # And the run events dispatching
     await dp.start_polling(bot)
-
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)

@@ -1,7 +1,3 @@
-
-import datetime
-from dateutil.relativedelta import relativedelta
-
 from database.mongo import db
 
 from aiogram import Router, F
