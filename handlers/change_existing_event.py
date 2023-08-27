@@ -37,14 +37,14 @@ async def show_list_of_events(clbck: CallbackQuery, state: FSMContext):
     events = list(collection_events.find({"user_id": user_id}))
     if len(events) == 0:
         await state.clear()
-        await clbck.message.answer("Поки що у вас немає жодної події.", reply_markup=main_menu.iexit_kb)
+        await clbck.message.answer(f"{texts.no_available_events}", reply_markup=main_menu.iexit_kb)
     else:
         sorted_events = sorted(events, key=lambda x: x["event_date"])
         await state.update_data(events_list = sorted_events)
         text = "Виберіть подію з списку нижче: \n\n"
         for num, val in enumerate(sorted_events):
             text += f"{num+1} - {val['event_name']} - {val['event_date'].strftime('%Y-%m-%d')}\n"
-            await clbck.message.answer(text, reply_markup=main_menu.iexit_kb)
+        await clbck.message.answer(text, reply_markup=main_menu.iexit_kb)
         
     
 
@@ -58,10 +58,10 @@ async def show_edit_options(message: Message, state: FSMContext):
         # await message.answer(f"{choice} \n {data}")
         selected_event = data["events_list"][choice]
         await state.update_data(selected_event=selected_event)
-        await message.answer(f"Що ви хочете зробити з подією?", reply_markup=change_event.change_options)
+        await message.answer(f"{texts.change_events_available_options}", reply_markup=change_event.change_options)
     except:
         await state.clear()
-        await message.answer("Неправильний номер.", reply_markup=main_menu.iexit_kb)
+        await message.answer(f"{texts.hange_event_select_incorrect_number}", reply_markup=main_menu.iexit_kb)
 
 @router.callback_query(ChangeEvent.selected_event, F.data == "add_reminder")
 async def show_reminders(clbck: CallbackQuery, state: FSMContext):
@@ -75,7 +75,7 @@ async def show_reminders(clbck: CallbackQuery, state: FSMContext):
     for num, val in enumerate(reminders_sorted):
         text += f"{num+1} - {correct_day_word(val)};\n"
     await clbck.message.answer(f"{text}")
-    await clbck.message.answer("Введіть число від 0 до 28, щоб додати нагадування за стільки днів.", reply_markup=main_menu.iexit_kb)    
+    await clbck.message.answer(f"{texts.change_event_add_reminder_value}", reply_markup=main_menu.iexit_kb)    
 
 @router.message(ChangeEvent.get_current_reminders)
 async def add_reminders(message: Message, state: FSMContext):
@@ -85,18 +85,18 @@ async def add_reminders(message: Message, state: FSMContext):
         reminders = data["selected_event"]["reminders"]
         choice = int(message.text)
         if (choice < 0) | (choice > 28):
-            await message.answer("Неправильна кількість днів", reply_markup=main_menu.iexit_kb)
+            await message.answer(f"{texts.change_event_incorrect_days_value}", reply_markup=main_menu.iexit_kb)
         elif -choice in reminders:
-            await message.answer("Нагадувалка за цей період вже існує", reply_markup=main_menu.iexit_kb)
+            await message.answer(f"{texts.change_event_existing_days_value}", reply_markup=main_menu.iexit_kb)
         else:
             reminders.append(-choice)
             data["selected_event"]["reminders"] = sorted(reminders)
             filter = {"_id":  data["selected_event"]["_id"]}
             new_value = {"$set": {"reminders": data["selected_event"]["reminders"]}}
             collection_events.update_one(filter, new_value)
-            await message.answer(f"Нагадування {correct_day_word(choice).lower()} успішно додане", reply_markup=main_menu.iexit_kb)
+            await message.answer(f"{texts.change_event_reminder_added_succesfully.format(days_value=correct_day_word(choice).lower())}", reply_markup=main_menu.iexit_kb)
     except:
-         await message.answer(f"Некоректна кількість днів", reply_markup=main_menu.iexit_kb)
+         await message.answer(f"{texts.change_event_incorrect_days_value}", reply_markup=main_menu.iexit_kb)
     finally:
         await state.clear()
 
@@ -107,7 +107,7 @@ async def show_reminders(clbck: CallbackQuery, state: FSMContext):
     await state.set_state(ChangeEvent.delete_approve)
     data = await state.get_data()
     selected_event = data["selected_event"]
-    await clbck.message.answer(f"Ви впевнені, що хочете видалити подію {selected_event['event_name']}?", reply_markup=general.yes_no)
+    await clbck.message.answer(f"{texts.change_event_delete_approve.format(selected_event['event_name'])}", reply_markup=general.yes_no)
 
 @router.callback_query(ChangeEvent.delete_approve, F.data == "yes")
 async def show_reminders(clbck: CallbackQuery, state: FSMContext):
@@ -117,4 +117,4 @@ async def show_reminders(clbck: CallbackQuery, state: FSMContext):
     selected_event = data["selected_event"]
     collection_events.delete_one({"_id": selected_event["_id"]})
     await state.clear()
-    await clbck.message.answer("Подія успішно видалена!", reply_markup=main_menu.iexit_kb)
+    await clbck.message.answer(f"{texts.change_event_delete_success}", reply_markup=main_menu.iexit_kb)

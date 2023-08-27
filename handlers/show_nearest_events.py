@@ -66,6 +66,6 @@ async def input_text_prompt(clbck: CallbackQuery, state: FSMContext):
     for num, val in enumerate(sorted_events):
         text += f"{num+1} - {val[0]} - {val[1].strftime('%Y-%m-%d')}\n"
     if len(text) == 0:
-        await clbck.message.answer(f"Поки що у вас немає жодної події.", reply_markup=main_menu.iexit_kb)
+        await clbck.message.answer(f"{texts.no_available_events}", reply_markup=main_menu.iexit_kb)
     else:
         await clbck.message.answer(f"{text}", reply_markup=main_menu.iexit_kb)

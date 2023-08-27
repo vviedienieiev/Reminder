@@ -53,9 +53,9 @@ async def command_start_handler(message: Message) -> None:
 @router.message(F.text == "Вийти в меню")
 @router.message(F.text == "◀️ Вийти в меню")
 async def menu_message(msg: Message):
-    await msg.answer("Головне меню ☰", reply_markup=main_menu.main_menu)
+    await msg.answer(f"{texts.main_menu}", reply_markup=main_menu.main_menu)
 
 @router.callback_query(F.data == "menu")
 async def menu_callback(clbck: CallbackQuery):
     await clbck.answer()
-    await clbck.message.answer("Головне меню ☰", reply_markup=main_menu.main_menu)
+    await clbck.message.answer(f"{texts.main_menu}", reply_markup=main_menu.main_menu)
