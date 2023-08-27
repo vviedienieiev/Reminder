@@ -36,7 +36,7 @@ async def main() -> None:
     # dp.include_router(router)
 
     # Initialize Bot instance with a default parse mode which will be passed to all API calls
-    bot = Bot(os.getenv("TG_TOKEN"), parse_mode=ParseMode.HTML)
+    bot = Bot(os.environ["TG_TOKEN"], parse_mode=ParseMode.HTML)
     # And the run events dispatching
     await dp.start_polling(bot)
 
