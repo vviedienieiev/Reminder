@@ -54,14 +54,13 @@ async def show_edit_options(message: Message, state: FSMContext):
     try:
         data = await state.get_data()
         choice = int(message.text)-1
-
         # await message.answer(f"{choice} \n {data}")
         selected_event = data["events_list"][choice]
         await state.update_data(selected_event=selected_event)
         await message.answer(f"{texts.change_events_available_options}", reply_markup=change_event.change_options)
     except:
         await state.clear()
-        await message.answer(f"{texts.hange_event_select_incorrect_number}", reply_markup=main_menu.iexit_kb)
+        await message.answer(f"{texts.change_event_select_incorrect_number}", reply_markup=main_menu.iexit_kb)
 
 @router.callback_query(ChangeEvent.selected_event, F.data == "add_reminder")
 async def show_reminders(clbck: CallbackQuery, state: FSMContext):
