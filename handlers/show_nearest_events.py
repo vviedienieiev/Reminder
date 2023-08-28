@@ -16,7 +16,7 @@ collection_events = db["events"]
 
 def get_one_time_events(user_id):
     one_time_events = list(collection_events.find({"user_id": user_id, 
-                                 "event_recuring_type": "one_time", 
+                                 "event_recurring_type": "one_time", 
                                  "event_date": {"$gte": datetime.datetime.today()}},
                                  {"event_name": 1, "event_date": 1}))
     one_time_events = [[val['event_name'], val['event_date'].date()] for val in one_time_events]
@@ -24,7 +24,7 @@ def get_one_time_events(user_id):
 
 def get_recurring_events(user_id):
     recurring_events = list(collection_events.find({"user_id": user_id, 
-                                 "event_recuring_type": "recurring"},
+                                 "event_recurring_type": "recurring"},
                                  {"event_name": 1, "event_date": 1, "event_freq": 1}))
     ls = []
     for val in recurring_events:

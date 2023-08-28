@@ -5,11 +5,16 @@ import os
 
 from aiogram import Bot, Dispatcher, Router, types
 from aiogram.enums import ParseMode
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
+from schedulers import bot_is_working, notify_users, update_event_status_and_date
 from handlers import add_new_event, start, show_nearest_events, change_existing_event
 
 # All handlers should be attached to the Router (or Dispatcher)
 router = Router()
+
+# Initialize Bot instance with a default parse mode which will be passed to all API calls
+bot = Bot(os.environ["TG_TOKEN"], parse_mode=ParseMode.HTML)
 
 @router.message()
 async def echo_handler(message: types.Message) -> None:
@@ -34,10 +39,12 @@ async def main() -> None:
     dp.include_router(show_nearest_events.router)
     dp.include_router(change_existing_event.router)
     # dp.include_router(router)
-
-    # Initialize Bot instance with a default parse mode which will be passed to all API calls
-    bot = Bot(os.environ["TG_TOKEN"], parse_mode=ParseMode.HTML)
+    scheduler = AsyncIOScheduler(timezone="Europe/Kiev")
+    scheduler.add_job(bot_is_working, "cron", hour=9, minute=0, args=(bot,))
+    scheduler.add_job(notify_users, "cron", hour=10, minute=0, args=(bot,))
+    scheduler.add_job(update_event_status_and_date, "cron", hour=18, minute=3)
     # And the run events dispatching
+    scheduler.start()
     await dp.start_polling(bot)
 
 if __name__ == "__main__":

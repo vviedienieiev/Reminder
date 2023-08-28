@@ -102,7 +102,7 @@ async def show_reminders(clbck: CallbackQuery, state: FSMContext):
     await state.set_state(ChangeEvent.delete_approve)
     data = await state.get_data()
     selected_event = data["selected_event"]
-    await clbck.message.answer(f"{texts.change_event_delete_approve.format(selected_event['event_name'])}", reply_markup=general.yes_no)
+    await clbck.message.answer(f"{texts.change_event_delete_approve.format(event_name = selected_event['event_name'])}", reply_markup=general.yes_no)
 
 @router.callback_query(ChangeEvent.delete_approve, F.data == "yes")
 async def show_reminders(clbck: CallbackQuery, state: FSMContext):
