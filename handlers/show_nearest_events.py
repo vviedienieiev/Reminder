@@ -33,7 +33,7 @@ def get_recurring_events(user_id):
 
         today = datetime.datetime.today().date()
         init_date = val["event_date"].date()
-        freq = int(val["event_freq"].split(" ")[0])
+        freq = int(val["event_freq"])
         month_diff = (today.year - init_date.year) * 12 + today.month - init_date.month
         init_day = init_date.day
         if month_diff < 0: 

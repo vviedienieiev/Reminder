@@ -2,6 +2,7 @@ import asyncio
 import logging
 import sys
 import os
+from dotenv import load_dotenv
 
 from aiogram import Bot, Dispatcher, Router, types
 from aiogram.enums import ParseMode
@@ -10,11 +11,12 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from schedulers import bot_is_working, notify_users, update_event_status_and_date
 from handlers import add_new_event, start, show_nearest_events, change_existing_event
 
+load_dotenv()
 # All handlers should be attached to the Router (or Dispatcher)
 router = Router()
 
 # Initialize Bot instance with a default parse mode which will be passed to all API calls
-bot = Bot(os.environ["TG_TOKEN"], parse_mode=ParseMode.HTML)
+bot = Bot(os.getenv("TG_TOKEN"), parse_mode=ParseMode.HTML)
 
 @router.message()
 async def echo_handler(message: types.Message) -> None:
