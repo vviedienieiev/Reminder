@@ -44,7 +44,7 @@ async def main() -> None:
     scheduler = AsyncIOScheduler(timezone="Europe/Kiev")
     scheduler.add_job(bot_is_working, "cron", hour=9, minute=0, args=(bot,))
     scheduler.add_job(notify_users, "cron", hour=10, minute=0, args=(bot,))
-    scheduler.add_job(update_event_status_and_date, "cron", hour=18, minute=3)
+    scheduler.add_job(update_event_status_and_date, "cron", hour=11, minute=0)
     # And the run events dispatching
     scheduler.start()
     await dp.start_polling(bot)
