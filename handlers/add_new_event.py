@@ -103,7 +103,10 @@ async def insert_event(clbck: CallbackQuery, state: FSMContext):
         try:
             data["reminders"] = [-7, -2, 0]
             data["status"] = "active"
-            data["next_date"] = calculate_next_occurence(data["event_date"], int(data["event_freq"]), incl_today = False)
+            if data["event_recurring_type"] == "one_time":
+                data["next_date"] = data["event_date"]
+            else:
+                data["next_date"] = calculate_next_occurence(data["event_date"], int(data["event_freq"]), incl_today = False)
             collection_events.insert_one(data).inserted_id
             await clbck.message.answer(f"{texts.new_event_added_succesfully}", reply_markup=main_menu.iexit_kb)
         except:
